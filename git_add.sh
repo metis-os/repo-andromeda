@@ -1,4 +1,4 @@
 #!/bin/bash
 git add .
 git commit -m "updated pkgs"
-git push origin
+git push origin main --force
