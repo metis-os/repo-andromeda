@@ -19,7 +19,7 @@ commit_msg () {
 final () {
     read input
     git commit -m "$input"
-    git push origin
+    git push origin --force
 }
 
 init
