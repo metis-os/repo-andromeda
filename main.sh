@@ -4,7 +4,7 @@
 ## Everyone is permitted to copy and distribute copies of this file under GNU-GPL3
 
 # DIRS
-PKGDIR=("$HOME/metis-repo/x86_64/")
+PKGDIR=("$HOME/trash/metis-repo/x86_64/")
 
 Cleanup() {
         cd "$PKGDIR" || exit
