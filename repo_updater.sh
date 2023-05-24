@@ -1,65 +1,69 @@
 #!/usr/bin/env bash
 
-## Copyright (C) 2020-2022 Metis Linux <info@metislinux.org>
-## Everyone is permitted to copy and distribute copies of this file under GNU-GPL3
+## Copyright (C) 2022-present Metis Linux  || Pwnwriter <info@metislinux.org>
+## Everyone is permitted to copy and distribute copies of this file under MIT License
 
-# Variables
-PKGDIR="${HOME}/metis-repo/x86_64"
+# DIRS
+
+repo=andromeda
+PKGDIR="$(pwd)/${repo}/os/x86_64/"
+
 
 cleanup() {
-  cd "$PKGDIR" || exit
-  rm -rf metis.db* metis.files*
-  cd ..
-  echo -e "[*] Repo cleaned successfully [*]"
+    cd "$PKGDIR" || { echo "Error: Unable to navigate to $PKGDIR"; exit 1; }
+    rm -rf andromeda.db* andromeda.files*
+    cd ../ || { echo "Error: Unable to navigate back from $PKGDIR"; exit 1; }
+    echo -e "[*] Repo cleaned successfully [*]"
 }
 
 gitadd() {
-  git add --all
-  read -rp "Enter commit message: " commitmsg
-  git commit -m "$commitmsg"
-  git push --force
-  echo -e "[*] Added all pkgs to Repo [*]\n"
+    git add --all || { echo "Error: Failed to add files to Git"; exit 1; }
+    read -p "Enter commit message: " commitmsg 
+    git commit -m "$commitmsg" || { echo "Error: Failed to commit changes"; exit 1; }
+    git push --force || { echo "Error: Failed to push changes"; exit 1; }
+    echo -e "[*] Added all packages to the repository [*]\n"
 }
 
 updaterepo() {
-  cd "$PKGDIR" || exit
-  repo-add -n -R metis.db.tar.gz *.pkg.tar.zst*
-  cd ..
-  echo -e "[*] Repo updated successfully [*]"
-  echo -e "\n"
+    cd "$PKGDIR" || { echo "Error: Unable to navigate to $PKGDIR"; exit 1; }
+    repo-add -n -R andromeda.db.tar.gz *.pkg.tar.zst* || { echo "Error: Failed to update repository"; exit 1; }
+    cd ../ || { echo "Error: Unable to navigate back from $PKGDIR"; exit 1; }
+    echo -e "[*] Repo updated successfully [*]"
+    echo -e "\n"
 }
 
-usage() {
-  cat <<-EOF
-    Usage: $(basename "$0") [-c] [-u] [-g] [-h]
-
+usages() {
+    cat <<- EOF
+    Usage: $(basename "$0") [-c] [-u] [-g]
     Options:
-      -c    Clean current repo
-      -u    Update Repo
-      -g    Add files to GitHub repo
-      -h    Show this help message
+        -h    Show this help message
+        -u    Update Repo
+        -g    Add files to GitHub repo
+        -c    Clean current repo
 
-    To add Metis repo, first create a zst archive of the file and use the options -c -u -g respectively to add it to the repository.
+To add Metis repo, first create a zst archive of the file and use -c -u -g respectively to add it to the repository.
 EOF
 }
 
-# Get the directory of the script
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# Getopts implementation for arguments
 
-# Move to the script directory
-cd "$SCRIPT_DIR" || exit
+if [[ $# -eq 0 ]]; then
+    usages
+    exit 1
+fi
 
-# Parse command-line options
 while getopts 'cugh' option; do
-  case "$option" in
+    case "$option" in
     c)
-      cleanup ;;
+        cleanup ;;
     u)
-      updaterepo ;;
+        updaterepo ;;
     g)
-      gitadd ;;
-    h | *)
-      usage ;;
-  esac
+        gitadd ;;
+    h)
+        usages ;;
+    ?)
+        exit 1 ;;
+    esac
 done
 

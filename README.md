@@ -1,9 +1,17 @@
-<h2 align="center"> Metis Linux packages mirrorlists </h2>
+# metis-andromeda
+Andromeda: System pkgs for @metis-os
 
-```sh
-Server = https://pkgs.metislinux.org/$arch
-Server = https://metislinux.iyamnabeen.xyz/$arch
-Server = https://metislinux.yogeshlamichhane.com.np/$arch
+
+Setup:
+
+Add the following line to your `/etc/pacman.conf`
+```bash
+[andromeda]
+SigLevel = Optional TrustAll
+Include = /etc/pacman.d/metis-andromeda
 ```
-### More: 
-\[[ contribution guide ](https://github.com/metis-os/metis-repo/wiki/pkg-guide)\] \[[ package manager ](https://wiki.archlinux.org/title/pacman )\] 
+and add the server adress to `/etc/pacman.d/metis-andromeda`
+
+```
+Server = https://metis-os.github.io/repo-andromeda/$repo/os/$arch
+```
